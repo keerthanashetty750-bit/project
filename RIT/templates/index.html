@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RetinalPay — Biometric Secured Payments</title>
+    <meta name="description" content="A futuristic biometric payment system using retinal scanning for secure gold, bitcoin and trading transactions — no phone or card needed."/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<!-- ============================================================
+     LANDING / SCAN TRIGGER SCREEN
+================================================================-->
+<div id="landing-screen" class="screen active">
+    <div class="bg-orbs">
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+    </div>
+    <div class="landing-content">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="32" cy="32" rx="28" ry="20" stroke="url(#g1)" stroke-width="2"/>
+                    <circle cx="32" cy="32" r="10" stroke="url(#g1)" stroke-width="2"/>
+                    <circle cx="32" cy="32" r="4" fill="url(#g1)"/>
+                    <path d="M10 20 Q32 8 54 20" stroke="url(#g1)" stroke-width="1.5" fill="none"/>
+                    <path d="M10 44 Q32 56 54 44" stroke="url(#g1)" stroke-width="1.5" fill="none"/>
+                    <defs>
+                        <linearGradient id="g1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00f5d4"/>
+                            <stop offset="1" stop-color="#7b2fff"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>RetinalPay</h1>
+                <span class="tagline">Biometric Secured Payments</span>
+            </div>
+        </div>
+
+        <div class="hero-text">
+            <p class="hero-sub">No Phone. No Card. No Network Required.</p>
+            <p class="hero-desc">Authenticate with your unique retinal signature to access your <strong>Gold Vault</strong>, <strong>Bitcoin Wallet</strong>, and <strong>Trading Portfolio</strong> — anywhere, anytime.</p>
+        </div>
+
+        <div class="scan-trigger-area">
+            <button class="btn-scan-start" id="startScanBtn" onclick="showScanModal()">
+                <span class="btn-icon">👁</span>
+                <span>Initiate Retinal Scan</span>
+            </button>
+            <p class="security-note">🔒 256-bit encrypted · Air-gap compatible · ISO 19794-6 compliant</p>
+        </div>
+
+        <div class="features-row">
+            <div class="feature-card">
+                <span class="feat-icon">🥇</span>
+                <h3>Gold Vault</h3>
+                <p>Deposit & withdraw physical gold equivalents</p>
+            </div>
+            <div class="feature-card">
+                <span class="feat-icon">₿</span>
+                <h3>Bitcoin</h3>
+                <p>Secure crypto transfers without connectivity</p>
+            </div>
+            <div class="feature-card">
+                <span class="feat-icon">📈</span>
+                <h3>Trading</h3>
+                <p>Execute trades via biometric-verified sessions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCAN MODAL
+================================================================-->
+<div id="scan-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeScanModal()">✕</button>
+        <h2 class="modal-title">Retinal Scan Authentication</h2>
+        <p class="modal-sub">Please look directly into the scanner. Keep your eyes open and steady.</p>
+
+        <div class="scanner-container" id="scannerContainer">
+            <div class="eye-frame">
+                <div class="eye-ring r1"></div>
+                <div class="eye-ring r2"></div>
+                <div class="eye-ring r3"></div>
+                <div class="scan-line"></div>
+                <div class="iris">
+                    <div class="pupil"></div>
+                    <div class="iris-pattern"></div>
+                </div>
+                <div class="scan-dots">
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="scan-status" class="scan-status">READY TO SCAN</div>
+        <div id="scan-progress-bar" class="scan-progress-bar hidden">
+            <div id="scan-fill" class="scan-fill"></div>
+        </div>
+
+        <!-- Demo user selector for hackathon demo -->
+        <div class="demo-users" id="demoUserSection">
+            <p class="demo-label">🎤 Hackathon Demo — Select your iris profile:</p>
+            <div class="demo-btns">
+                <button class="demo-user-btn" onclick="triggerScan('EYE_SCAN_DEMO_001')">👁 Arjun</button>
+                <button class="demo-user-btn" onclick="triggerScan('EYE_SCAN_DEMO_002')">👁 Priya</button>
+                <button class="demo-user-btn" onclick="triggerScan('EYE_SCAN_DEMO_003')">👁 Rohan</button>
+                <button class="demo-user-btn demo-deny" onclick="triggerScan('FAKE_SCAN_999')">👁 Unknown</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD SCREEN
+================================================================-->
+<div id="dashboard-screen" class="screen hidden">
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="nav-eye">👁</span> RetinalPay
+        </div>
+        <div class="nav-info">
+            <span class="nav-user-name" id="navUserName">—</span>
+            <span class="nav-badge">✔ Biometric Verified</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="dashboard-content">
+        <!-- Greeting -->
+        <div class="greeting-section">
+            <h2 id="greetUser">Welcome back, —</h2>
+            <p id="greetTime"></p>
+        </div>
+
+        <!-- Balance Cards -->
+        <div class="balance-grid">
+            <div class="balance-card card-fiat">
+                <div class="card-header">
+                    <span class="card-label">Fiat Reserve</span>
+                    <span class="card-icon">💵</span>
+                </div>
+                <div class="card-value" id="bal-fiat">₹ 0.00</div>
+                <div class="card-sub">Available • INR</div>
+            </div>
+            <div class="balance-card card-gold">
+                <div class="card-header">
+                    <span class="card-label">Gold Vault</span>
+                    <span class="card-icon">🥇</span>
+                </div>
+                <div class="card-value" id="bal-gold">0.0000 g</div>
+                <div class="card-sub">Physical Gold Equivalent</div>
+            </div>
+            <div class="balance-card card-btc">
+                <div class="card-header">
+                    <span class="card-label">Bitcoin Wallet</span>
+                    <span class="card-icon">₿</span>
+                </div>
+                <div class="card-value" id="bal-btc">0.000000 BTC</div>
+                <div class="card-sub">Offline Signed Wallet</div>
+            </div>
+        </div>
+
+        <!-- Transaction Panel -->
+        <div class="txn-panel">
+            <div class="txn-form-section">
+                <h3>New Transaction</h3>
+                <div class="form-group">
+                    <label>Asset Type</label>
+                    <select id="txn-asset" class="form-input">
+                        <option value="FIAT">💵 Fiat (INR)</option>
+                        <option value="GOLD">🥇 Gold</option>
+                        <option value="BTC">₿ Bitcoin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Transaction Type</label>
+                    <select id="txn-type" class="form-input">
+                        <option value="Transfer">Transfer</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Deposit">Deposit</option>
+                        <option value="Withdraw">Withdraw</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="txn-amount" class="form-input" placeholder="0.00" min="0.000001" step="any"/>
+                </div>
+                <div class="form-group">
+                    <label>Recipient / Destination</label>
+                    <input type="text" id="txn-recipient" class="form-input" placeholder="Wallet ID, Vault Name, etc."/>
+                </div>
+                <button class="btn-txn" onclick="submitTransaction()">
+                    <span>🔐 Authorize & Send</span>
+                </button>
+                <div id="txn-msg" class="txn-msg hidden"></div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="txn-history-section">
+                <h3>Transaction History</h3>
+                <div id="txn-list" class="txn-list">
+                    <p class="txn-empty">Loading history...</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     TOAST NOTIFICATION
+================================================================-->
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
